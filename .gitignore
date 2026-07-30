@@ -1,0 +1,16 @@
+# Node
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Slidev build output
+dist/
+.slidev/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/settings.json
