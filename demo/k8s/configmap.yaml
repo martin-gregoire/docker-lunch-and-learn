@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lunchdemo-config
+  namespace: lunchdemo
+data:
+  POSTGRES_DB: lunchdemo

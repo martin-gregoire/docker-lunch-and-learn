@@ -22,7 +22,7 @@ description: "Task list for 001-presentation-plan"
 **Purpose**: Create the skeleton files and directory structure everything else builds on.
 
 - [X] T001 Create `presentation/PLAN.md` with header (title, target duration, audience, last-updated date) and two empty top-level sections: `## Part 1 — Outline` and `## Part 2 — Demos` per `contracts/plan-format.md`
-- [ ] T002 [P] Create `demo/` directory structure: `demo/api/`, `demo/nginx/`, `demo/k8s/`
+- [X] T002 [P] Create `demo/` directory structure: `demo/api/`, `demo/nginx/`, `demo/k8s/`
 
 ---
 
@@ -32,14 +32,14 @@ description: "Task list for 001-presentation-plan"
 
 **⚠️ CRITICAL**: Phases 5 and 6 cannot begin until this phase is complete.
 
-- [ ] T003 Write `demo/api/app.py` — Flask app with `GET /api/items` (returns JSON list from PostgreSQL), `GET /api/health` (returns `{"status": "ok"}`), and db connection via `DATABASE_URL` env var
-- [ ] T004 [P] Write `demo/api/requirements.txt` — `flask`, `psycopg2-binary`, `gunicorn`
-- [ ] T005 [P] Write `demo/api/Dockerfile` — multi-stage build (`python:3.12-slim` builder → slim runtime; non-root user `appuser`; `EXPOSE 8000`; `CMD ["gunicorn", ...]`) per constitution Hands-On Examples principle
-- [ ] T006 [P] Write `demo/nginx/nginx.conf` — serves static `index.html` on port 80; proxies `/api/` to `api:8000`; and `demo/nginx/Dockerfile` (`FROM nginx:1.27-alpine`, copies conf)
-- [ ] T007 Write `demo/docker-compose.yml` — three services: `nginx` (build: `./nginx`, ports `80:80`), `api` (build: `./api`, env `DATABASE_URL`, `depends_on: db: condition: service_healthy`), `db` (`postgres:16-alpine`, named volume `pgdata`, healthcheck); networks: `backend`
-- [ ] T008 [P] Write `demo/api/app_v2.py` and updated `demo/api/requirements_v2.txt` adding `python-json-logger` — the Demo 3 dev-loop artifact (structured JSON logging replacing plain text; verifiable without a browser)
-- [ ] T009 Write `demo/k8s/` manifests: `namespace.yaml`, `configmap.yaml` (non-sensitive config), `secret.yaml` (DB password), `api-deployment.yaml` + `api-service.yaml` (NodePort), `nginx-deployment.yaml` + `nginx-service.yaml` (NodePort), `db-statefulset.yaml` + `db-service.yaml` (ClusterIP) + `db-pvc.yaml` per data-model.md Demo entity
-- [ ] T010 [P] Write `PREREQUISITES.md` at repo root listing all required tools with minimum versions and `--version` verification commands (Docker Engine ≥ 26, Compose plugin ≥ 2, minikube ≥ 1.33, kubectl ≥ 1.30, Python 3.12)
+- [X] T003 Write `demo/api/app.py` — Flask app with `GET /api/items` (returns JSON list from PostgreSQL), `GET /api/health` (returns `{"status": "ok"}`), and db connection via `DATABASE_URL` env var
+- [X] T004 [P] Write `demo/api/requirements.txt` — `flask`, `psycopg2-binary`, `gunicorn`
+- [X] T005 [P] Write `demo/api/Dockerfile` — multi-stage build (`python:3.12-slim` builder → slim runtime; non-root user `appuser`; `EXPOSE 8000`; `CMD ["gunicorn", ...]`) per constitution Hands-On Examples principle
+- [X] T006 [P] Write `demo/nginx/nginx.conf` — serves static `index.html` on port 80; proxies `/api/` to `api:8000`; and `demo/nginx/Dockerfile` (`FROM nginx:1.27-alpine`, copies conf)
+- [X] T007 Write `demo/docker-compose.yml` — three services: `nginx` (build: `./nginx`, ports `80:80`), `api` (build: `./api`, env `DATABASE_URL`, `depends_on: db: condition: service_healthy`), `db` (`postgres:16-alpine`, named volume `pgdata`, healthcheck); networks: `backend`
+- [X] T008 [P] Write `demo/api/app_v2.py` and updated `demo/api/requirements_v2.txt` adding `python-json-logger` — the Demo 3 dev-loop artifact (structured JSON logging replacing plain text; verifiable without a browser)
+- [X] T009 Write `demo/k8s/` manifests: `namespace.yaml`, `configmap.yaml` (non-sensitive config), `secret.yaml` (DB password), `api-deployment.yaml` + `api-service.yaml` (NodePort), `nginx-deployment.yaml` + `nginx-service.yaml` (NodePort), `db-statefulset.yaml` + `db-service.yaml` (ClusterIP) + `db-pvc.yaml` per data-model.md Demo entity
+- [X] T010 [P] Write `PREREQUISITES.md` at repo root listing all required tools with minimum versions and `--version` verification commands (Docker Engine ≥ 26, Compose plugin ≥ 2, minikube ≥ 1.33, kubectl ≥ 1.30, Python 3.12)
 
 **Checkpoint**: `lunchdemo` app is buildable and runnable — run `docker compose -f demo/docker-compose.yml up -d` and verify `curl http://localhost/api/items` returns HTTP 200.
 

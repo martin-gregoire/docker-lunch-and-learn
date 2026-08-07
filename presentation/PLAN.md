@@ -152,7 +152,7 @@ builds, layer caching, and why containers should run as a non-root user.
 - Core instructions: `FROM` (base image), `WORKDIR`, `COPY`, `RUN` (install/build), `EXPOSE`, `CMD`/`ENTRYPOINT`
 - **Layer caching**: order instructions from least- to most-frequently changed — `COPY requirements.txt` before `COPY .`
 - **Multi-stage builds**: compile in one `AS builder` stage; `COPY --from=builder` only the artefact into a slim runtime image
-- **Non-root user**: `RUN adduser --no-create-home appuser && USER appuser` — limits blast radius of a container compromise
+- **Non-root user**: `RUN useradd -r -u 1001 appuser && USER appuser` — limits blast radius of a container compromise
 - **`.dockerignore`**: like `.gitignore` for Docker builds — prevents `COPY .` from including `.env`, `node_modules`, `.git`, and build artefacts in the image
 
 **References**:
@@ -284,7 +284,7 @@ each Compose construct maps to a K8s resource.
 **Slide content**:
 - **Compose → K8s mapping**: `service:` → Deployment + Service; `depends_on:` → readiness probe; `volumes:` → PVC; `environment:` → ConfigMap / Secret
 - `kubectl apply -f k8s/`: applies all manifests declaratively and idempotently — safe to re-run
-- Verify: `kubectl get pods` (all Running) → `kubectl get services` (NodePort assigned) → `minikube service nginx --url` → open in browser
+- Verify: `kubectl get pods -n lunchdemo` (all Running) → `kubectl get services -n lunchdemo` (NodePort assigned) → `minikube service nginx -n lunchdemo --url` → open in browser
 - The same app you built step-by-step in Docker is now running on a Kubernetes cluster
 
 **References**:
