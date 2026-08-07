@@ -130,6 +130,8 @@ T012 + T018 ──► T019, T020, T021, T022
 T019 + T020 + T021 + T022 ──► T024 ──► T025
 T015 + T017 ──► T026
 T012 + T013 + T018-T022 ──► T027
+
+T028 ──► T029, T030, T031, T032, T033, T034, T035, T036, T037
 ```
 
 ## Parallel Execution Opportunities
@@ -142,6 +144,7 @@ T012 + T013 + T018-T022 ──► T027
 | US2 | After T018 | T019 alongside T020; T021 and T022 after T007/T009 |
 | US3 | After T022 | T023 alongside T024 |
 | Polish | After T022 | T026 alongside T027; T025 last |
+| Slide docs | After T028 | T029–T037 all in parallel |
 
 ## Phase 8: Slide-Building Documentation
 
@@ -150,18 +153,18 @@ T012 + T013 + T018-T022 ──► T027
 - `**References**` — links to authoritative official docs/specs for accuracy verification
 - `**Media**` — entries prefixed `[use]` (link to an existing official diagram/image) or `[create]` (description of a custom visual to be authored for the slide)
 
-**Prerequisite**: T037 must complete before T028–T036 (format contract defines the field structure).
+**Prerequisite**: T028 must complete before T029–T037 (format contract defines the field structure).
 
-- [ ] T037 Update `specs/001-presentation-plan/contracts/plan-format.md` to add `**Slide content**`, `**References**`, and `**Media**` as required fields in the Section entry format; document the `[use]` / `[create]` distinction for the Media field
-- [ ] T028 [P] Enrich §1 (The Problem) and §2 (Containers vs VMs) in `presentation/PLAN.md` with Slide content, References, and Media fields
-- [ ] T029 [P] Enrich §3 (The Container Ecosystem) in `presentation/PLAN.md` — includes `[create]` entries for a Linux namespaces/cgroups diagram and a CRI abstraction layer diagram
-- [ ] T030 [P] Enrich §4 (Docker Architecture & Images) in `presentation/PLAN.md` — includes `[use]` entry for the official Docker architecture diagram
-- [ ] T031 [P] Enrich §5 (Dockerfiles & Best Practices) in `presentation/PLAN.md` — includes `[create]` entry for a multi-stage build layer diagram
-- [ ] T032 [P] Enrich §6 (Core CLI, Networking & Volumes) in `presentation/PLAN.md` — includes `[create]` entry for a custom bridge network diagram showing container-name DNS
-- [ ] T033 [P] Enrich §7 (Docker Compose) in `presentation/PLAN.md` — includes `[create]` entry for a before/after diagram (5 `docker run` commands → single `docker compose up`)
-- [ ] T034 [P] Enrich §8 (Why Kubernetes?) and §9 (K8s Core Concepts) in `presentation/PLAN.md` — includes `[use]` entry for the official K8s cluster architecture diagram
-- [ ] T035 [P] Enrich §10 (LIVE DEMO: Deploy to Cluster) in `presentation/PLAN.md` — includes `[use]` for the Compose→K8s mapping table already in `slides.md` and `[create]` for a deployment flow diagram
-- [ ] T036 [P] Enrich §11 (Useful Tools & Resources) in `presentation/PLAN.md` — curated tool list with one-line descriptions and homepage links; no media required
+- [X] T028 Update `specs/001-presentation-plan/contracts/plan-format.md` to add `**Slide content**`, `**References**`, and `**Media**` as required fields in the Section entry format; document the `[use]` / `[create]` distinction for the Media field
+- [X] T029 [P] Enrich §1 (The Problem) and §2 (Containers vs VMs) in `presentation/PLAN.md` with Slide content, References, and Media fields
+- [X] T030 [P] Enrich §3 (The Container Ecosystem) in `presentation/PLAN.md` — includes `[create]` entries for a Linux namespaces/cgroups diagram and a CRI abstraction layer diagram
+- [X] T031 [P] Enrich §4 (Docker Architecture & Images) in `presentation/PLAN.md` — includes `[use]` entry for the official Docker architecture diagram
+- [X] T032 [P] Enrich §5 (Dockerfiles & Best Practices) in `presentation/PLAN.md` — includes `[create]` entry for a multi-stage build layer diagram
+- [X] T033 [P] Enrich §6 (Core CLI, Networking & Volumes) in `presentation/PLAN.md` — includes `[create]` entry for a custom bridge network diagram showing container-name DNS
+- [X] T034 [P] Enrich §7 (Docker Compose) in `presentation/PLAN.md` — includes `[create]` entry for a before/after diagram (5 `docker run` commands → single `docker compose up`)
+- [X] T035 [P] Enrich §8 (Why Kubernetes?) and §9 (K8s Core Concepts) in `presentation/PLAN.md` — includes `[use]` entry for the official K8s cluster architecture diagram
+- [X] T036 [P] Enrich §10 (LIVE DEMO: Deploy to Cluster) in `presentation/PLAN.md` — includes `[use]` for the Compose→K8s mapping table already in `slides.md` and `[create]` for a deployment flow diagram
+- [X] T037 [P] Enrich §11 (Useful Tools & Resources) in `presentation/PLAN.md` — curated tool list with one-line descriptions and homepage links; no media required
 
 > §12 (Q&A) is explicitly excluded — no Slide content, References, or Media fields apply to an open discussion.
 
@@ -171,4 +174,4 @@ T012 + T013 + T018-T022 ──► T027
 
 **MVP** (minimum to deliver US1 value): T001 → T011 → T012 → T013. This produces a shareable Outline section suitable for manager review before any demo work begins.
 
-**Full delivery order**: Phase 1 → Phase 2 (parallelise T003–T010) → Phase 3 → Phase 4 → Phase 5 (parallelise T019/T020) → Phase 6 → Phase 7 → Phase 8 (T037 first, then T028–T036 in parallel).
+**Full delivery order**: Phase 1 → Phase 2 (parallelise T003–T010) → Phase 3 → Phase 4 → Phase 5 (parallelise T019/T020) → Phase 6 → Phase 7 → Phase 8 (T028 first, then T029–T037 in parallel).
