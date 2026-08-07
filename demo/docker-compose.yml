@@ -1,0 +1,48 @@
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - backend
+
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgresql://postgres:secret@db:5432/lunchdemo
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    networks:
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: lunchdemo
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lunchdemo"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+
+networks:
+  backend:
