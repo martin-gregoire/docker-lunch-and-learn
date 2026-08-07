@@ -79,6 +79,17 @@ presentation/PLAN.md
 **Slides**: [...]
 **Demo**: No demo
 
+**Slide content**:
+- [Talking point 1]
+- [Talking point 2]
+- [Talking point 3]
+
+**References**:
+- [Authoritative source title](https://url) — one-line description
+
+**Media**:
+- [create] [Description of custom visual to be authored]
+
 ---
 
 ### Section N — [Title]
@@ -87,6 +98,18 @@ presentation/PLAN.md
 **Duration**: N min
 **Slides**: [...]
 **Demo**: Demo checkpoint N — [short label]
+
+**Slide content**:
+- [Talking point 1]
+- [Talking point 2]
+- [Talking point 3]
+
+**References**:
+- [Authoritative source title](https://url) — one-line description
+
+**Media**:
+- [use] [Title](https://url) — existing official diagram/image
+- [create] [Description of custom visual to be authored]
 
 ---
 
@@ -165,6 +188,9 @@ presentation/PLAN.md
 | `**Duration**` | Integer minutes; no ranges |
 | `**Slides**` | Either "slides N–M", "slide N", or "new slide needed" |
 | `**Demo**` | MUST be present on every Section; value is "No demo", "Demo deferred to §N — [reason]", or "Demo checkpoint N — [label]" |
+| `**Slide content**` | 3–5 bullet talking points the slide must cover; suggestions only — final wording is the implementer's responsibility; MUST be present on every Section except §12 (Q&A) |
+| `**References**` | One or more links to authoritative sources (official docs, specs, RFCs); each entry is `[Title](url) — one-line description`; MUST be present on every Section except §12 (Q&A) |
+| `**Media**` | One or more media entries, each prefixed with either `[use]` or `[create]`: `[use]` links to an existing official diagram/image that can be embedded directly; `[create]` describes a custom visual that must be authored for the slide; MUST be present on every Section except §12 (Q&A); may contain only `[create]` entries, only `[use]` entries, or both |
 | `**Inherited state**` | First checkpoint: "None — clean Docker install"; subsequent: describe concrete artifacts left behind |
 | `**Resulting state**` | Describe concrete artifacts/running services; must map to next checkpoint's `Inherited state` |
 | `**Fallback**` | Must be actionable (e.g., "Show pre-recorded `docker ps` output" not "skip the demo") |
@@ -177,7 +203,7 @@ presentation/PLAN.md
 
 Before committing a change to `PLAN.md`:
 
-- [ ] Every Section block has all five fields: Teaching goal, Duration, Slides, Demo
+- [ ] Every Section block has all eight fields: Teaching goal, Duration, Slides, Demo, Slide content, References, Media (§12 Q&A is exempt from Slide content, References, and Media)
 - [ ] No Section's `Demo` field is blank or missing
 - [ ] Outline summary table totals match the sum of individual section durations
 - [ ] Every `Demo checkpoint N` reference in the Outline has a matching `### Demo Checkpoint N` entry in Part 2
