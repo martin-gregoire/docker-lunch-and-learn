@@ -1,0 +1,5 @@
+/* Fix: goto dialog overflows viewport when closed because 33 slides make it taller than the -top-20 offset */
+#slidev-goto-dialog.\-top-20 {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

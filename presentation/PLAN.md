@@ -2,7 +2,7 @@
 
 **Target Duration**: 55–70 minutes
 **Audience**: Software Developers & Quality Engineers
-**Last Updated**: 2026-07-30
+**Last Updated**: 2026-08-19
 
 ---
 
@@ -47,6 +47,7 @@ reinforces the theory immediately after it is explained.
 **Teaching goal**: Audience understands why environment inconsistency is a costly, universal
 problem in software delivery, and why a portable packaging solution like containers is the
 right answer.
+**Narrative**: Opening section — establishes the environment-consistency problem that every subsequent concept addresses.
 **Duration**: 4 min
 **Slides**: The Problem
 **Demo**: No demo
@@ -70,6 +71,7 @@ right answer.
 **Teaching goal**: Audience understands what a container is structurally — shared kernel,
 isolated process namespace — why it is lighter and faster than a VM, and when each
 approach is appropriate.
+**Narrative**: Having named the problem, we examine the solution structurally — what a container actually is under the hood, contrasted with the VM approach most developers already know.
 **Duration**: 4 min
 **Slides**: VMs vs Containers
 **Demo**: No demo
@@ -91,18 +93,25 @@ approach is appropriate.
 ### Section 3 — The Container Ecosystem
 
 **Teaching goal**: Audience understands the Linux primitives (namespaces, cgroups) that make
-container isolation possible, what the Container Runtime Interface (CRI) standardises, and
-why Docker is one of several interchangeable runtimes alongside Podman, containerd, and CRI-O.
-**Duration**: 6 min
-**Slides**: new slides needed — Linux namespaces & cgroups · CRI overview · Docker alternatives table
+container isolation possible, how open standards and licensing shaped the ecosystem, what the
+Container Runtime Interface (CRI) standardises, and why Docker is one of several interchangeable
+runtimes alongside Podman, containerd, and CRI-O.
+**Narrative**: Knowing what a container is structurally, we widen the lens to the ecosystem around it — open standards and runtimes — so the audience understands Docker as one interchangeable option, not the only one.
+**Duration**: 8 min
+**Slides**: Linux namespaces & cgroups · Open Standards & Licensing · CRI overview · Docker alternatives table
 **Demo**: No demo
 
 **Slide content**:
 - **Namespaces**: 6 types (PID, net, mnt, uts, ipc, user) — each gives a process tree its own isolated view of a resource
 - **cgroups**: enforce per-container CPU, memory, and I/O limits — prevent one container from starving others
-- **OCI** (Open Container Initiative): standardises image format and runtime spec so runtimes are interchangeable
+- **Open Standards & Licensing**:
+  - **OCI** (Open Container Initiative, 2015): Docker + others founded it to standardise image format and runtime spec — any OCI-compliant image runs on any compliant runtime
+  - **Moby** (2017): Docker open-sourced its engine under Apache 2.0; `dockerd`/`containerd`/`runc` are now community-governed
+  - **CNCF** (Cloud Native Computing Foundation): neutral home for containerd, Kubernetes, and the broader cloud-native ecosystem
+  - Net result: runtimes are interchangeable — vendor lock-in is eliminated at the image and runtime layer
 - **CRI** (Container Runtime Interface): Kubernetes' plug-in API to the runtime — kubelet speaks CRI; runtime executes pods
 - Runtime options: Docker (daemon + UX on top of containerd), Podman (daemonless), containerd, CRI-O (bare CRI runtimes)
+- **Docker Desktop licensing**: not free for commercial use (companies with >250 employees or >$10M revenue require a paid plan) — this is the primary driver behind adoption of Podman Desktop and other free alternatives
 
 **References**:
 - [Linux namespaces (man7)](https://man7.org/linux/man-pages/man7/namespaces.7.html) — authoritative reference for namespace types and isolation semantics
@@ -119,6 +128,7 @@ why Docker is one of several interchangeable runtimes alongside Podman, containe
 
 **Teaching goal**: Audience understands the Daemon–CLI–Registry triangle, how the Docker
 daemon manages images and containers, and what a layered image filesystem is.
+**Narrative**: With the ecosystem framed, we zoom into Docker specifically — how its daemon, CLI, and registry collaborate, and how an image is composed of immutable, cacheable layers.
 **Duration**: 4 min
 **Slides**: Docker Architecture · Docker Images
 **Demo**: No demo
@@ -144,6 +154,7 @@ daemon manages images and containers, and what a layered image filesystem is.
 
 **Teaching goal**: Audience can read and write a basic Dockerfile; understands multi-stage
 builds, layer caching, and why containers should run as a non-root user.
+**Narrative**: Knowing what an image is, the audience now learns to produce one from source code — the Dockerfile is the build recipe, and multi-stage builds keep the result small and secure.
 **Duration**: 5 min
 **Slides**: The Dockerfile · Dockerfile Best Practices
 **Demo**: Demo checkpoint 1 — Build the `lunchdemo` API image
@@ -170,6 +181,7 @@ builds, layer caching, and why containers should run as a non-root user.
 **Teaching goal**: Audience knows the essential `docker` commands for the daily workflow,
 understands how containers on a custom bridge network reach each other by name, and how
 named volumes provide persistent storage that survives container removal.
+**Narrative**: The image now exists; this section covers running it and wiring containers together — the CLI commands and networking primitives used in every subsequent demo step.
 **Duration**: 5 min
 **Slides**: Core CLI Commands · Networking · Volumes
 **Demo**: Demo checkpoint 2 — Pull and run PostgreSQL; connect the API via a custom network
@@ -196,6 +208,7 @@ named volumes provide persistent storage that survives container removal.
 with a single YAML file, build service images with Compose, and iterate through the
 developer inner loop (add a dependency → rebuild one service → verify) without
 restarting the entire stack.
+**Narrative**: Running three containers manually via `docker run` is repetitive and fragile; Compose replaces that with a single declarative YAML file and one command — the natural evolution of everything covered so far.
 **Duration**: 5 min
 **Slides**: Why Docker Compose? · Docker Compose YAML · Compose Commands Cheat-Sheet
 **Demo**: Demo checkpoint 3 — Bring up the full 3-tier stack; add `python-json-logger` and rebuild only the API
@@ -222,6 +235,7 @@ restarting the entire stack.
 **Teaching goal**: Audience understands the limitations of single-host Compose at production
 scale and what problem Kubernetes solves; can describe the control-plane / worker-node split
 at a conceptual level.
+**Narrative**: Compose handles one host reliably in development, but production demands failover, auto-scaling, and rolling updates across multiple nodes — that gap is the motivation for Kubernetes.
 **Duration**: 5 min
 **Slides**: Why Kubernetes? · Kubernetes Architecture
 **Demo**: No demo
@@ -247,6 +261,7 @@ at a conceptual level.
 and PersistentVolumeClaims at the level needed to read and follow the upcoming live demo
 manifests — not as comprehensive K8s curriculum, but as the minimum vocabulary for the
 showcase.
+**Narrative**: Before the live demo, the audience needs just enough K8s vocabulary — Pods, Deployments, Services, ConfigMaps, Secrets, PVCs — to follow the manifest walkthrough without getting lost.
 **Duration**: 7 min
 **Slides**: Namespaces · The Pod · Deployments · Services · ConfigMaps & Secrets · Persistent Volumes
 **Demo**: No demo
@@ -277,6 +292,7 @@ showcase.
 **Teaching goal**: Audience sees the `lunchdemo` application — already familiar from the
 Docker sections — deployed and running on a local Kubernetes cluster, and understands how
 each Compose construct maps to a K8s resource.
+**Narrative**: With the vocabulary established, the audience watches the familiar `lunchdemo` application deployed end-to-end on a local cluster, making every abstract K8s concept concrete.
 **Duration**: 10 min
 **Slides**: Compose → Kubernetes Mapping (intro) + live terminal
 **Demo**: Demo checkpoint 4 — Deploy the full 3-tier app to minikube; verify it is reachable
@@ -302,6 +318,7 @@ each Compose construct maps to a K8s resource.
 **Teaching goal**: Audience leaves with a curated, immediately actionable list of ecosystem
 tools (management UIs, local cluster options, networking utilities) and official resources
 to continue learning after the session.
+**Narrative**: The core content is complete; this section equips the audience with a curated toolkit and learning path so they can continue independently after the session.
 **Duration**: 4 min
 **Slides**: Summary · Resources & Next Steps
 **Demo**: No demo
@@ -331,6 +348,7 @@ to continue learning after the session.
 
 **Teaching goal**: Audience can ask questions, explore specific use cases, and understand
 how these workflows apply to their team's upcoming projects.
+**Narrative**: Session content delivered — this section gives the audience space to connect the material to their own context through open questions.
 **Duration**: 4 min
 **Slides**: Thank You!
 **Demo**: —
@@ -343,7 +361,7 @@ how these workflows apply to their team's upcoming projects.
 |---|---------|----------|------|
 | 1 | The "It Works on My Machine" Problem | 4 min | No demo |
 | 2 | Containers vs. Virtual Machines | 4 min | No demo |
-| 3 | The Container Ecosystem | 6 min | No demo |
+| 3 | The Container Ecosystem | 8 min | No demo |
 | 4 | Docker Architecture & Images | 4 min | No demo |
 | 5 | Dockerfiles & Best Practices | 5 min | Demo checkpoint 1 |
 | 6 | Core CLI, Networking & Volumes | 5 min | Demo checkpoint 2 |
@@ -353,7 +371,7 @@ how these workflows apply to their team's upcoming projects.
 | 10 | LIVE DEMO: Deploy to Cluster | 10 min | Demo checkpoint 4 |
 | 11 | Useful Tools & Resources | 4 min | No demo |
 | 12 | Q&A | 4 min | — |
-| | **Total** | **63 min** | |
+| | **Total** | **65 min** | |
 
 ---
 
@@ -362,4 +380,248 @@ how these workflows apply to their team's upcoming projects.
 > Operational reference for presenters. Each checkpoint builds on the state left by the
 > previous one. Do not skip a checkpoint — later steps depend on artifacts created earlier.
 
-*(Demo checkpoints to be added — see tasks T019–T022)*
+`lunchdemo` is built incrementally across four checkpoints. Each checkpoint's **Inherited state** describes what the previous step left behind — do not skip steps, as later commands depend on artifacts created by earlier ones. The application arc runs: build the API image → wire services manually with `docker run` → declare the full stack with Compose → deploy to a local Kubernetes cluster.
+
+---
+
+### Demo Checkpoint 1 — Build the `lunchdemo` API image
+
+**Section**: §5 — Dockerfiles & Best Practices
+**Concept illustrated**: Writing a Dockerfile; multi-stage build; layer caching; non-root user
+**Inherited state**: Clean Docker install; no `lunchdemo` images or containers exist
+
+**Prerequisites**:
+- Docker Engine ≥ 26 (`docker --version`)
+
+**Steps**:
+
+1. **Navigate to the demo directory and open the Dockerfile**
+   ```bash
+   cd demo/
+   cat api/Dockerfile
+   ```
+   Walk through the two stages: `python:3.12-slim` builder → slim runtime; point out `COPY requirements.txt` before `COPY .` (layer caching order), the non-root `appuser`, and the `gunicorn` CMD.
+
+2. **Build the API image**
+   ```bash
+   docker build -t lunchdemo-api:1.0 ./api
+   ```
+   Expected: layer-by-layer output; each `RUN` step is executed.
+
+3. **Run a second build to demonstrate layer caching**
+   ```bash
+   docker build -t lunchdemo-api:1.0 ./api
+   ```
+   Expected: all steps show `CACHED` — packages are not reinstalled.
+
+4. **Verify the image exists**
+   ```bash
+   docker images lunchdemo-api
+   ```
+   Expected: `lunchdemo-api   1.0   [id]   [size ~150 MB]`
+
+**Fallback**: If the build fails, pull the pre-built image and tag it locally:
+```bash
+docker pull ghcr.io/lunchdemo/lunchdemo-api:1.0
+docker tag ghcr.io/lunchdemo/lunchdemo-api:1.0 lunchdemo-api:1.0
+```
+Continue from Step 4 to verify the image.
+
+**Resulting state**: `lunchdemo-api:1.0` image exists locally. No containers running.
+
+---
+
+### Demo Checkpoint 2 — Connect services with `docker run`
+
+**Section**: §6 — Core CLI, Networking & Volumes
+**Concept illustrated**: Custom bridge network; named volume; container-name DNS; `docker run` flag composition
+**Inherited state**: `lunchdemo-api:1.0` image exists locally (from Checkpoint 1)
+
+**Prerequisites**:
+- Docker Engine ≥ 26 (`docker --version`)
+
+**Steps**:
+
+1. **Create a custom bridge network**
+   ```bash
+   docker network create lunchdemo-net
+   ```
+   Expected: a network ID is printed.
+
+2. **Create a named volume for PostgreSQL data**
+   ```bash
+   docker volume create lunchdemo-pgdata
+   ```
+   Expected: `lunchdemo-pgdata`
+
+3. **Start the PostgreSQL database**
+   ```bash
+   docker run -d \
+     --name db \
+     --network lunchdemo-net \
+     -v lunchdemo-pgdata:/var/lib/postgresql/data \
+     -e POSTGRES_PASSWORD=secret \
+     -e POSTGRES_DB=lunchdemo \
+     postgres:16-alpine
+   ```
+   Expected: container ID printed. Wait ~5 seconds for Postgres to initialise.
+
+4. **Start the API container**
+   ```bash
+   docker run -d \
+     --name api \
+     --network lunchdemo-net \
+     -e DATABASE_URL=postgresql://postgres:secret@db:5432/lunchdemo \
+     -p 8000:8000 \
+     lunchdemo-api:1.0
+   ```
+   Point out: `db` in `DATABASE_URL` resolves by container name — no IP address required.
+
+5. **Verify the API is reachable**
+   ```bash
+   curl http://localhost:8000/api/health
+   ```
+   Expected: `{"status": "ok"}`
+
+   ```bash
+   curl http://localhost:8000/api/items
+   ```
+   Expected: `[]` (empty list — no items seeded yet)
+
+**Fallback**: If `curl` fails, run `docker logs api` to diagnose. If the database is not yet ready, wait 10 seconds and retry. As a last resort, show `docker ps` output as a screenshot and explain the expected behaviour verbally.
+
+**Resulting state**: `db` and `api` containers running on `lunchdemo-net`; API reachable at `http://localhost:8000`; `lunchdemo-pgdata` volume persists database data.
+
+---
+
+### Demo Checkpoint 3 — Bring up the full stack with Docker Compose
+
+**Section**: §7 — Docker Compose
+**Concept illustrated**: Declarative multi-container stack; `docker compose build`; `depends_on` with health checks; developer inner loop (rebuild one service without restarting the stack)
+**Inherited state**: `db` and `api` containers running from Checkpoint 2
+
+**Prerequisites**:
+- Docker Engine ≥ 26 (`docker --version`)
+- Compose plugin ≥ 2 (`docker compose version`)
+
+**Steps**:
+
+1. **Stop and remove the manual containers**
+   ```bash
+   docker stop api db && docker rm api db
+   ```
+
+2. **Show the Compose file**
+   ```bash
+   cat demo/docker-compose.yml
+   ```
+   Point out: `build: ./api` on the api service (Compose builds from source); `depends_on.db.condition: service_healthy` (waits for the health check before starting the API); the `pgdata` named volume; the `backend` network.
+
+3. **Build all service images**
+   ```bash
+   cd demo && docker compose build
+   ```
+   Expected: layer-by-layer build output; caching applies on a second run.
+
+4. **Start the full stack**
+   ```bash
+   docker compose up -d
+   ```
+   Expected: `[+] Running 3/3` — nginx, api, and db all healthy.
+
+5. **Verify all services are healthy**
+   ```bash
+   docker compose ps
+   ```
+   Expected: all three services show `running` / `healthy`.
+
+6. **Open the app in a browser**
+   Open `http://localhost` — nginx serves the frontend, which calls the Python API.
+
+7. **Demonstrate the developer inner loop** — add structured logging to the API:
+   Open `demo/api/app_v2.py` and `demo/api/requirements_v2.txt` to show the `python-json-logger` addition; explain that reinstalling a package requires a container rebuild.
+
+   ```bash
+   # Swap in the v2 source files
+   cp demo/api/app_v2.py demo/api/app.py
+   cp demo/api/requirements_v2.txt demo/api/requirements.txt
+
+   # Rebuild and replace only the api service
+   docker compose build api && docker compose up -d --no-deps api
+   ```
+   Expected: only the `api` container restarts; `db` and `nginx` keep running undisturbed.
+
+8. **Verify the JSON logs are active**
+   ```bash
+   docker compose logs api | head -5
+   ```
+   Expected: structured JSON log lines (not plain text).
+
+**Fallback**: If `docker compose up` fails, run `docker compose logs` to diagnose. If the inner loop step runs long, show the before/after source diff on screen and describe the rebuild command verbally.
+
+**Resulting state**: Full 3-tier stack (nginx + api + db) running via Compose; API rebuilt with structured JSON logging; all services reachable at `http://localhost`.
+
+---
+
+### Demo Checkpoint 4 — Deploy to a local Kubernetes cluster
+
+**Section**: §10 — LIVE DEMO: Deploy to Cluster
+**Concept illustrated**: Compose → K8s resource mapping; Deployment, Service (NodePort), ConfigMap, Secret, PVC, StatefulSet; `kubectl apply`; verifying a running deployment
+**Inherited state**: Full Compose stack running (from Checkpoint 3); minikube already started
+
+**Prerequisites**:
+- minikube ≥ 1.33 (`minikube version`)
+- kubectl ≥ 1.30 (`kubectl version --client`)
+- minikube pre-started before the session: `minikube start` (takes ~2 min on first run)
+
+**Steps**:
+
+1. **Stop the Compose stack**
+   ```bash
+   cd demo && docker compose down
+   ```
+
+2. **Point Docker at the minikube registry**
+   ```bash
+   eval $(minikube docker-env)
+   ```
+   This routes `docker build` into minikube's internal Docker daemon — no registry push required.
+
+3. **Build the API image inside minikube**
+   ```bash
+   docker build -t lunchdemo-api:1.0 ./api
+   ```
+
+4. **Walk through the K8s manifests**
+   ```bash
+   ls demo/k8s/
+   ```
+   Briefly cover: `namespace.yaml` · `configmap.yaml` (non-sensitive config) · `secret.yaml` (DB password) · `api-deployment.yaml` + `api-service.yaml` (NodePort) · `nginx-deployment.yaml` + `nginx-service.yaml` (NodePort) · `db-statefulset.yaml` + `db-service.yaml` + `db-pvc.yaml`.
+
+5. **Apply all manifests**
+   ```bash
+   kubectl apply -f demo/k8s/
+   ```
+   Expected: each resource listed as `created`.
+
+6. **Wait for pods to be ready**
+   ```bash
+   kubectl get pods -n lunchdemo --watch
+   ```
+   Wait until all pods show `Running`. Press `Ctrl+C` when done.
+
+7. **Inspect services**
+   ```bash
+   kubectl get services -n lunchdemo
+   ```
+   Expected: `nginx` and `api` services with NodePort assignments.
+
+8. **Get the app URL and open it**
+   ```bash
+   minikube service nginx -n lunchdemo --url
+   ```
+   Open the printed URL in a browser — the full `lunchdemo` app is running on Kubernetes.
+
+**Fallback**: If minikube is slow, show a pre-recorded `kubectl get pods -n lunchdemo` output with all pods `Running`. Open a pre-taken browser screenshot showing the app. Describe each `kubectl apply` step verbally while showing the manifest files on screen.
+
+**Resulting state**: Full 3-tier `lunchdemo` application running on minikube; reachable in a browser via the NodePort service. SC-005 achieved.
