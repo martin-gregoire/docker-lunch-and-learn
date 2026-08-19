@@ -9,6 +9,9 @@ pnpm-debug.log*
 dist/
 .slidev/
 
+# Logs
+nohup.out
+
 # macOS
 .DS_Store
 

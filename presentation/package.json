@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "slidev --open",
+    "dev": "slidev",
     "build": "slidev build",
     "export": "slidev export"
   },
