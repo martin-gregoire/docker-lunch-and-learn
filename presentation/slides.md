@@ -1061,16 +1061,25 @@ spec:
 
 ---
 
-# LIVE DEMO — Deploy `lunchdemo` to Kubernetes
+# LIVE DEMO — `lunchdemo` end-to-end
 
 ```bash
-# 1. Point Docker at minikube's internal daemon (no registry push needed)
-eval $(minikube docker-env)
+# CP1: Build all images (run from demo/)
+docker compose build
 
-# 2. Build the API image inside minikube
-docker build -t lunchdemo-api:1.0 ./api
+# CP2: Run the full stack
+docker compose up -d
+docker compose ps                      # all three services healthy
+curl http://localhost/api/items        # [{"id":1,"name":"Docker"},...]
 
-# 3. Apply all manifests declaratively
+# CP3: Dev inner loop — add structured logging
+cp demo/api/app_v2.py demo/api/app.py
+cp demo/api/requirements_v2.txt demo/api/requirements.txt
+docker compose build api && docker compose up -d --no-deps api
+docker compose logs api | head -5      # JSON log lines
+
+# CP4: Bring down and deploy to Kubernetes
+docker compose down
 kubectl apply -f demo/k8s/
 # namespace/lunchdemo created
 # configmap/lunchdemo-config created  secret/lunchdemo-secret created
@@ -1078,11 +1087,11 @@ kubectl apply -f demo/k8s/
 # deployment.apps/nginx created       service/nginx created
 # statefulset.apps/db created         service/db created
 
-# 4. Watch pods reach Running state
+# Watch pods reach Running state
 kubectl get pods -n lunchdemo --watch
 
-# 5. Get the app URL and open it in a browser
-minikube service nginx -n lunchdemo --url
+# Expose the app and open http://localhost:8080
+kubectl port-forward svc/nginx 8080:80 -n lunchdemo
 ```
 
 ```

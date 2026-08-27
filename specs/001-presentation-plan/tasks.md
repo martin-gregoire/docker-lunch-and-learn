@@ -107,9 +107,9 @@ description: "Task list for 001-presentation-plan"
 
 **Purpose**: End-to-end validation; slides.md content alignment; final format check.
 
-- [ ] T025 Run quickstart.md Validations 4–7 end-to-end (execute all 4 demo checkpoints sequentially on a clean machine); fix any command errors found in `presentation/PLAN.md` or demo source files
-- [ ] T026 [P] Run quickstart.md Validation 8 (plan-first governance): count `# …` headings in `slides.md` that have no corresponding Section entry in `presentation/PLAN.md`; resolve any orphans
-- [ ] T027 [P] Run quickstart.md Validations 1–2 (outline completeness + demo indicator coverage): confirm 12 sections, 4 checkpoint references, 8 "No demo" entries, 0 blank `**Demo**:` fields; update `presentation/PLAN.md` `Last Updated` date
+- [X] T025 Run quickstart.md Validations 4–7 end-to-end (execute all 4 demo checkpoints sequentially on a clean machine); fix any command errors found in `presentation/PLAN.md` or demo source files
+- [X] T026 [P] Run quickstart.md Validation 8 (plan-first governance): count `# …` headings in `slides.md` that have no corresponding Section entry in `presentation/PLAN.md`; resolve any orphans
+- [X] T027 [P] Run quickstart.md Validations 1–2 (outline completeness + demo indicator coverage): confirm 12 sections, 4 checkpoint references, 8 "No demo" entries, 0 blank `**Demo**:` fields; update `presentation/PLAN.md` `Last Updated` date
 
 ---
 
@@ -200,6 +200,14 @@ T038 + T039 + T040 + T041 + T042 + T043 + T044 + T045 + T046 ──► T047
 - [X] T048 Add a one-sentence "Why this follows the previous section" narrative connector to each of the 12 Section entries in `presentation/PLAN.md` Part 1, making the session's logical progression explicit for a new presenter per US3/AC1 (missing)
 - [X] T049 Reconcile the Section 3 duration discrepancy in `presentation/PLAN.md`: the section entry says `**Duration**: 8 min` but the Outline Summary table shows `6 min`; update one value so both are consistent per FR-006 (partial)
 - [X] T050 Update the `**Last Updated**` date in `presentation/PLAN.md` header to today's date (2026-08-19), reflecting completion of all Phase 9 slide-authoring tasks per FR-010 and T027 (partial)
+
+---
+
+## Phase 11: Convergence
+
+- [ ] T051 Create `demo/api/app_v2.py` — copy of `app.py` with `pythonjsonlogger` import and `JsonFormatter` lines uncommented; and `demo/api/requirements_v2.txt` — copy of `requirements.txt` with `python-json-logger` line uncommented per FR-011 (missing)
+- [ ] T052 Add `git checkout demo/api/app.py demo/api/requirements.txt` to `demo/reset.sh` so running reset after a dev-loop demo restores the original source files per SC-004 (partial)
+- [X] T053 Add `nohup.out` and `presentation/nohup.out` to `.gitignore` at repo root to exclude Slidev build artifacts per repo hygiene (unrequested)
 
 ---
 

@@ -14,7 +14,7 @@ This guide describes how to verify that `presentation/PLAN.md` is complete and c
 |------|----------------|--------|
 | Docker Engine | 26.x | `docker --version` |
 | Docker Compose plugin | 2.x | `docker compose version` |
-| minikube | 1.33+ | `minikube version` |
+| Colima | 0.6+ | `colima version` |
 | kubectl | 1.30+ | `kubectl version --client` |
 | Python | 3.12+ | `python3 --version` |
 | curl | any | `curl --version` |
@@ -48,141 +48,65 @@ Verify every Section in the Outline has an explicit demo indicator (FR-009).
 2. Confirm each value is exactly one of: `No demo`, `Demo deferred to §N — [reason]`, or `Demo checkpoint N — [label]`.
 3. Confirm no `**Demo**:` field is blank, missing, or says "TBD".
 
-**Expected outcome**: 12 sections; 4 sections show a checkpoint reference; 8 show "No demo"; 0 blank or missing. Section time totals fall within 55–70 minutes.
+**Expected outcome**: 12 sections; 1 section shows a checkpoint reference (§10); 11 show "No demo"; 0 blank or missing. Section time totals fall within 55–70 minutes.
 
 ---
 
 ## Validation 3 — Demo Chain Integrity
 
-Verify the inherited/resulting state chain is unbroken across all 4 checkpoints.
-
-**Steps**:
-
-1. In `PLAN.md` Part 2, read Demo 1's `Resulting state`.
-2. Confirm Demo 2's `Inherited state` describes the same concrete artifacts.
-3. Repeat for Demo 2→3 and Demo 3→4.
-
-**Expected outcome**: Each hand-off is consistent; no demo assumes artifacts that the previous demo did not produce.
+Not applicable — there is only one checkpoint.
 
 ---
 
-## Validation 4 — Demo Checkpoint 1 (Build the API image)
+## Validation 4 — Demo Checkpoint 1 (Full walkthrough)
 
-**Run from repo root.**
-
-```bash
-# Build the Python API image
-docker build -t lunchdemo-api:1.0 ./demo/api
-
-# Verify the image exists
-docker images lunchdemo-api
-```
-
-**Expected outcome**: `lunchdemo-api:1.0` appears in `docker images` output with a size under 300 MB.
-
----
-
-## Validation 5 — Demo Checkpoint 2 (Manual docker run)
-
-**Prerequisite**: Validation 4 completed successfully.
+**Run from repo root. Ensure a clean state first: `bash demo/reset.sh`**
 
 ```bash
-docker network create lunchdemo-net
-docker volume create lunchdemo-pgdata
+# Step 1: Build
+cd demo && docker compose build
+docker images lunchdemo-api lunchdemo-nginx
 
-docker run -d \
-  --name db \
-  --network lunchdemo-net \
-  -v lunchdemo-pgdata:/var/lib/postgresql/data \
-  -e POSTGRES_PASSWORD=secret \
-  postgres:16-alpine
+# Step 2: Run
+docker compose up -d
+sleep 15
+docker compose ps
+curl http://localhost/api/items
 
-# Wait ~5 seconds for postgres to be ready
-sleep 5
+# Step 3: Dev inner loop
+docker compose logs api | head -5
+cp demo/api/app_v2.py demo/api/app.py
+cp demo/api/requirements_v2.txt demo/api/requirements.txt
+docker compose build api && docker compose up -d --no-deps api
+docker compose logs api | head -5
 
-docker run -d \
-  --name api \
-  --network lunchdemo-net \
-  -e DATABASE_URL=postgresql://postgres:secret@db:5432/lunchdemo \
-  -p 8000:8000 \
-  lunchdemo-api:1.0
-
-curl http://localhost:8000/api/items
-```
-
-**Expected outcome**: `curl` returns a JSON array (e.g., `[]` or sample items). HTTP 200.
-
-**Teardown**:
-```bash
-docker rm -f db api
-docker network rm lunchdemo-net
-# Keep lunchdemo-pgdata for continuity check if desired, then:
-docker volume rm lunchdemo-pgdata
-```
-
----
-
-## Validation 6 — Demo Checkpoint 3 (Docker Compose)
-
-**Prerequisite**: Validation 5 teardown completed.
-
-```bash
-docker compose -f demo/docker-compose.yml up -d
-
-# Wait for health checks
-sleep 10
-docker compose -f demo/docker-compose.yml ps
-```
-
-**Expected outcome**: All three services (`nginx`, `api`, `db`) show status `healthy` or `running`. Opening `http://localhost` in a browser (or `curl http://localhost`) serves the frontend HTML.
-
-**Teardown**:
-```bash
-docker compose -f demo/docker-compose.yml down -v
-```
-
----
-
-## Validation 7 — Demo Checkpoint 4 (Deploy to minikube)
-
-**Prerequisite**: Validation 6 teardown completed; minikube started.
-
-```bash
-minikube start
-
-# Point shell to minikube's Docker daemon (so it can find the local image)
-eval $(minikube docker-env)
-docker build -t lunchdemo-api:1.0 ./demo/api
-
+# Step 4: Deploy to Kubernetes
+docker compose down
 kubectl apply -f demo/k8s/
-
-# Wait for pods to reach Running state (up to 2 minutes)
-kubectl wait --for=condition=ready pod -l app=api --timeout=120s
-kubectl wait --for=condition=ready pod -l app=nginx --timeout=120s
-kubectl wait --for=condition=ready pod -l app=db --timeout=120s
-
-kubectl get pods
-kubectl get services
-
-# Get the URL for the nginx NodePort service
-minikube service nginx --url
+kubectl wait --for=condition=ready pod -l app=api -n lunchdemo --timeout=120s
+kubectl wait --for=condition=ready pod -l app=nginx -n lunchdemo --timeout=120s
+kubectl wait --for=condition=ready pod -l app=db -n lunchdemo --timeout=120s
+kubectl get pods -n lunchdemo
+kubectl port-forward svc/nginx 8080:80 -n lunchdemo &
+sleep 3 && curl http://localhost:8080/api/items
 ```
 
 **Expected outcome**:
-- All pods show `Running` / `1/1 Ready`.
-- `minikube service nginx --url` returns a localhost URL.
-- Opening that URL in a browser (or `curl <url>`) serves the frontend HTML.
-- `curl <url>/api/items` returns a JSON array. HTTP 200.
+- Both images built; `lunchdemo-api:1.0` under 300 MB.
+- All 3 Compose services healthy; `curl http://localhost/api/items` returns JSON.
+- API logs become structured JSON after the rebuild.
+- All K8s pods `Running`; `curl http://localhost:8080/api/items` returns JSON.
 
 **Teardown**:
 ```bash
+kill %1 2>/dev/null
 kubectl delete -f demo/k8s/
-minikube stop
+git checkout demo/api/app.py demo/api/requirements.txt
 ```
 
 ---
 
-## Validation 8 — Plan-First Governance (Manual)
+## Validation 5 — Plan-First Governance (Manual)
 
 Verify no content exists in `slides.md` that has no corresponding entry in the Outline.
 
@@ -201,10 +125,7 @@ Verify no content exists in `slides.md` that has no corresponding entry in the O
 | Validation | Criteria | Status |
 |------------|----------|--------|
 | 1 — Outline completeness | Every slide maps to a section; 0 orphans | ☐ |
-| 2 — Demo indicator coverage | 11 sections; 4 with checkpoint refs; 0 blank | ☐ |
-| 3 — Demo chain integrity | Resulting state N = Inherited state N+1 | ☐ |
-| 4 — Checkpoint 1 | `lunchdemo-api:1.0` image built successfully | ☐ |
-| 5 — Checkpoint 2 | API returns HTTP 200 JSON via `docker run` | ☐ |
-| 6 — Checkpoint 3 | All 3 Compose services healthy; frontend accessible | ☐ |
-| 7 — Checkpoint 4 | All pods Running; app accessible via minikube URL | ☐ |
-| 8 — Plan-first governance | 0 orphan slide headings; plan date ≥ slides date | ☐ |
+| 2 — Demo indicator coverage | 12 sections; 1 with checkpoint ref (§10); 11 "No demo"; 0 blank | ☐ |
+| 3 — Demo chain integrity | N/A — single checkpoint | ✔ |
+| 4 — Checkpoint 1 | All steps pass end-to-end; K8s pods Running; app accessible | ☐ |
+| 5 — Plan-first governance | 0 orphan slide headings; plan date ≥ slides date | ☐ |
