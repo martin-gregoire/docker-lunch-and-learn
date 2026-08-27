@@ -99,68 +99,61 @@ layout: default
 
 # VMs vs Containers
 
-<div class="grid grid-cols-2 gap-x-10 gap-y-1 mt-6 items-start">
-<div>
-
-<pre style="font-size:0.6rem;line-height:1.3;padding:0.4rem 0.6rem;background:#f3f4f6;border-radius:4px;">
+<div style="display:flex;gap:1.5rem;margin-top:0.6rem;font-size:0.7rem;">
+<div style="flex:1;border:2px solid #dc2626;border-radius:10px;padding:0.75rem;background:#fef2f2;">
+<div style="font-weight:700;font-size:0.82rem;color:#991b1b;text-align:center;margin-bottom:0.55rem;">🖥️ Virtual Machine</div>
+<pre style="font-size:0.58rem;line-height:1.3;padding:0.4rem 0.6rem;background:#fee2e2;border-radius:4px;color:#450a0a;display:block;width:fit-content;margin:0 auto;">
 ┌──────────────┐ ┌──────────────┐
 │    App A     │ │    App B     │
 ├──────────────┤ ├──────────────┤
 │  Libraries   │ │  Libraries   │
 ├──────────────┤ ├──────────────┤
-│ GuestOS+Kern │ │ GuestOS+Kern │
-│ (Ubuntu ~1GB)│ │ (Debian ~1GB)│
+│  Guest OS    │ │  Guest OS    │
+│  + Kernel    │ │  + Kernel    │
+│  ~1 GB each  │ │  ~1 GB each  │
 ├──────────────┴─┴──────────────┤
 │         Hypervisor            │
 ├───────────────────────────────┤
 │       Host OS + Hardware      │
 └───────────────────────────────┘
 </pre>
-
+<div style="display:flex;gap:0.35rem;margin-top:0.45rem;flex-wrap:wrap;justify-content:center;">
+<span style="background:#fca5a5;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.65rem;">💾 ~1–2 GB per VM</span>
+<span style="background:#fca5a5;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.65rem;">⏱ Minutes to boot</span>
+<span style="background:#fca5a5;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.65rem;">🔁 Full OS duplicated per VM</span>
 </div>
-<div class="text-sm">
-
-**🖥️ Virtual Machines**
-
-- Each VM carries a **full Guest OS + kernel** (~1 GB each)
-- OS is **duplicated** for every workload → heavy disk & RAM
-- Boot time: **minutes**
-- Use when you need a different kernel or strict tenant isolation
-
+<div style="color:#7f1d1d;font-size:0.62rem;margin-top:0.35rem;line-height:1.4;text-align:center;">Use when you need a different kernel or strict tenant isolation</div>
 </div>
-<div>
-
-<pre style="font-size:0.6rem;line-height:1.3;padding:0.4rem 0.6rem;background:#f3f4f6;border-radius:4px;">
+<div style="display:flex;align-items:center;font-size:1.4rem;font-weight:800;color:#9ca3af;flex-shrink:0;">vs</div>
+<div style="flex:1;border:2px solid #16a34a;border-radius:10px;padding:0.75rem;background:#f0fdf4;">
+<div style="font-weight:700;font-size:0.82rem;color:#15803d;text-align:center;margin-bottom:0.55rem;">📦 Container</div>
+<pre style="font-size:0.58rem;line-height:1.3;padding:0.4rem 0.6rem;background:#dcfce7;border-radius:4px;color:#052e16;display:block;width:fit-content;margin:0 auto;">
 ┌──────────────┐ ┌──────────────┐
 │    App A     │ │    App B     │
 ├──────────────┤ ├──────────────┤
 │  Libraries   │ │  Libraries   │
-│(Node 18 ~50MB│ │(Python ~30MB)│
+│ (Node ~50MB) │ │(Python ~30MB)│
 ├──────────────┴─┴──────────────┤
 │  Container Runtime (shared)   │
 ├───────────────────────────────┤
 │  Host OS Kernel (shared)      │
 ├───────────────────────────────┤
-│          Hardware             │
+│           Hardware            │
 └───────────────────────────────┘
 </pre>
-
+<div style="display:flex;gap:0.35rem;margin-top:0.45rem;flex-wrap:wrap;justify-content:center;">
+<span style="background:#86efac;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.65rem;">💾 ~30–50 MB per container</span>
+<span style="background:#86efac;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.65rem;">⚡ Seconds to boot</span>
+<span style="background:#86efac;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.65rem;">🔗 One kernel shared by all</span>
 </div>
-<div class="text-sm">
-
-**📦 Containers**
-
-- Only **app + its direct dependencies** — no OS duplication
-- All containers share **one host kernel** → MBs instead of GBs
-- Boot time: **seconds**
-- Ideal for microservices, CI/CD, and standard workloads
-
+<div style="color:#14532d;font-size:0.62rem;margin-top:0.35rem;line-height:1.4;text-align:center;">Ideal for microservices, CI/CD, and standard workloads</div>
 </div>
 </div>
 
 <style scoped>
 h1 { margin-bottom: 0; }
 </style>
+
 
 ---
 layout: default
@@ -793,32 +786,71 @@ Compose is great for a **single host**. Production needs more:
 
 # Kubernetes Architecture
 
-<div class="grid grid-cols-2 gap-x-10 mt-4">
-<div class="text-sm">
-
-**⚙️ Control Plane** (master node)
-
-| Component | Role |
-|-----------|------|
-| **API Server** | All traffic goes through here; `kubectl` target |
-| **etcd** | Distributed key-value store — single source of truth for cluster state |
-| **Scheduler** | Assigns new pods to nodes based on resources |
-| **Controller Manager** | Runs reconciliation loops (self-healing, scaling) |
-
+<div style="display:flex;flex-direction:column;align-items:center;gap:0.55rem;margin-top:0.4rem;font-size:0.68rem;">
+<div style="border:2px solid #d97706;border-radius:8px;padding:0.55rem 1rem;width:100%;background:#fef3c7;">
+<div style="font-weight:700;color:#92400e;text-align:center;margin-bottom:0.4rem;font-size:0.72rem;">⚙️ Control Plane</div>
+<div style="display:flex;gap:0.4rem;justify-content:center;flex-wrap:wrap;">
+<div style="background:#fde68a;border:1px solid #f59e0b;border-radius:4px;padding:0.1rem 0.45rem;"><strong>API Server</strong> — single entry point for all requests</div>
+<div style="background:#fde68a;border:1px solid #f59e0b;border-radius:4px;padding:0.1rem 0.45rem;"><strong>Scheduler</strong> — assigns pods to nodes</div>
+<div style="background:#fde68a;border:1px solid #f59e0b;border-radius:4px;padding:0.1rem 0.45rem;"><strong>etcd</strong> — cluster state store</div>
+<div style="background:#fde68a;border:1px solid #f59e0b;border-radius:4px;padding:0.1rem 0.45rem;"><strong>Controller Manager</strong> — reconciliation loops</div>
 </div>
-<div class="text-sm">
-
-**🖥️ Worker Nodes** (data plane)
-
-| Component | Role |
-|-----------|------|
-| **kubelet** | Agent that runs pods and reports status to the API Server |
-| **kube-proxy** | Manages network rules for Service routing |
-| **Container runtime** | Runs the actual containers (`containerd`, CRI-O) |
-
-> Every object (pod, service, deployment) is stored in **etcd** and reconciled continuously by the Control Plane.
-
 </div>
+<div style="color:#6b7280;font-size:0.62rem;letter-spacing:0.05em;">▼ &nbsp; Scheduler picks a node · kubelet on that node starts the containers &nbsp; ▼</div>
+<div style="display:flex;gap:0.8rem;width:100%;">
+<div style="flex:1;border:2px solid #2563eb;border-radius:8px;padding:0.55rem;background:#eff6ff;">
+<div style="font-weight:700;color:#1d4ed8;text-align:center;margin-bottom:0.4rem;font-size:0.7rem;">🖥️ Worker Node 1</div>
+<div style="border:1px solid #16a34a;border-radius:5px;padding:0.3rem;margin-bottom:0.3rem;background:#f0fdf4;">
+<div style="color:#15803d;font-weight:600;font-size:0.58rem;margin-bottom:0.2rem;">lunchdemo</div>
+<div style="display:flex;flex-wrap:wrap;gap:0.2rem;">
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 nginx</div>
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 api</div>
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 postgres</div>
+</div>
+</div>
+<div style="border:1px solid #7c3aed;border-radius:5px;padding:0.3rem;background:#faf5ff;">
+<div style="color:#6d28d9;font-weight:600;font-size:0.58rem;margin-bottom:0.2rem;">kube-system</div>
+<div style="display:flex;flex-wrap:wrap;gap:0.2rem;">
+<div style="background:#ede9fe;border:1px solid #a78bfa;border-radius:3px;padding:0.08rem 0.3rem;">⚙️ kube-proxy</div>
+<div style="background:#ede9fe;border:1px solid #a78bfa;border-radius:3px;padding:0.08rem 0.3rem;">⚙️ coredns</div>
+</div>
+</div>
+</div>
+<div style="flex:1;border:2px solid #2563eb;border-radius:8px;padding:0.55rem;background:#eff6ff;">
+<div style="font-weight:700;color:#1d4ed8;text-align:center;margin-bottom:0.4rem;font-size:0.7rem;">🖥️ Worker Node 2</div>
+<div style="border:1px solid #16a34a;border-radius:5px;padding:0.3rem;margin-bottom:0.3rem;background:#f0fdf4;">
+<div style="color:#15803d;font-weight:600;font-size:0.58rem;margin-bottom:0.2rem;">lunchdemo</div>
+<div style="display:flex;flex-wrap:wrap;gap:0.2rem;">
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 nginx</div>
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 api</div>
+</div>
+</div>
+<div style="border:1px solid #7c3aed;border-radius:5px;padding:0.3rem;background:#faf5ff;">
+<div style="color:#6d28d9;font-weight:600;font-size:0.58rem;margin-bottom:0.2rem;">kube-system</div>
+<div style="display:flex;flex-wrap:wrap;gap:0.2rem;">
+<div style="background:#ede9fe;border:1px solid #a78bfa;border-radius:3px;padding:0.08rem 0.3rem;">⚙️ kube-proxy</div>
+<div style="background:#ede9fe;border:1px solid #a78bfa;border-radius:3px;padding:0.08rem 0.3rem;">⚙️ coredns</div>
+</div>
+</div>
+</div>
+<div style="flex:1;border:2px solid #2563eb;border-radius:8px;padding:0.55rem;background:#eff6ff;">
+<div style="font-weight:700;color:#1d4ed8;text-align:center;margin-bottom:0.4rem;font-size:0.7rem;">🖥️ Worker Node 3</div>
+<div style="border:1px solid #16a34a;border-radius:5px;padding:0.3rem;margin-bottom:0.3rem;background:#f0fdf4;">
+<div style="color:#15803d;font-weight:600;font-size:0.58rem;margin-bottom:0.2rem;">lunchdemo</div>
+<div style="display:flex;flex-wrap:wrap;gap:0.2rem;">
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 api</div>
+<div style="background:#bbf7d0;border:1px solid #4ade80;border-radius:3px;padding:0.08rem 0.3rem;">📦 postgres</div>
+</div>
+</div>
+<div style="border:1px solid #7c3aed;border-radius:5px;padding:0.3rem;background:#faf5ff;">
+<div style="color:#6d28d9;font-weight:600;font-size:0.58rem;margin-bottom:0.2rem;">kube-system</div>
+<div style="display:flex;flex-wrap:wrap;gap:0.2rem;">
+<div style="background:#ede9fe;border:1px solid #a78bfa;border-radius:3px;padding:0.08rem 0.3rem;">⚙️ kube-proxy</div>
+</div>
+</div>
+</div>
+</div>
+<div style="color:#6b7280;font-size:0.58rem;text-align:center;">📦 App pods scheduled by the Control Plane &nbsp;·&nbsp; ⚙️ <code>kube-proxy</code> runs on every node as a DaemonSet &nbsp;·&nbsp; <code>coredns</code> as a Deployment (DNS for the cluster)</div>
 </div>
 
 ---
