@@ -8,7 +8,7 @@ All tools below must be installed and available on `$PATH` before running any de
 |------|----------------|--------|
 | Docker Engine | 26.x | `docker --version` |
 | Docker Compose plugin | 2.x | `docker compose version` |
-| minikube | 1.33+ | `minikube version` |
+| Colima | 0.6+ | `colima version` |
 | kubectl | 1.30+ | `kubectl version --client` |
 | Python | 3.12+ | `python3 --version` |
 | curl | any | `curl --version` |
@@ -19,16 +19,14 @@ All tools below must be installed and available on `$PATH` before running any de
 - **macOS / Windows**: [Docker Desktop](https://docs.docker.com/desktop/) includes both Engine and the Compose plugin.
 - **Linux**: [Install Docker Engine](https://docs.docker.com/engine/install/) then [install the Compose plugin](https://docs.docker.com/compose/install/linux/).
 
-### minikube
+### Colima (macOS only)
 ```bash
 # macOS (Homebrew)
-brew install minikube
-
-# Linux
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
+brew install colima
 ```
-Full guide: <https://minikube.sigs.k8s.io/docs/start/>
+Full guide: <https://github.com/abiosoft/colima>
+
+> **Linux / Windows WSL2**: use [kind](https://kind.sigs.k8s.io/) as an alternative — `brew install kind` / `go install sigs.k8s.io/kind@latest`.
 
 ### kubectl
 ```bash
@@ -53,15 +51,15 @@ Run these commands before the session to confirm everything is ready:
 ```bash
 docker --version          # Docker version 26.x or later
 docker compose version    # Docker Compose version v2.x or later
-minikube version          # minikube version: v1.33 or later
+colima version            # colima version v0.6 or later
 kubectl version --client  # Client Version: v1.30 or later
 python3 --version         # Python 3.12.x or later
 curl --version            # any version
 ```
 
-Start minikube once so the initial image pull doesn't happen live:
+Start Colima with Kubernetes once so the initial image pull doesn't happen live:
 
 ```bash
-minikube start
-minikube status           # should show: host, kubelet, apiserver — Running
+colima start --kubernetes
+colima status             # should show: colima running, kubernetes: enabled
 ```
