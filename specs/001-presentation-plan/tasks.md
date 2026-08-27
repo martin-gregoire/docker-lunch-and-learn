@@ -203,14 +203,6 @@ T038 + T039 + T040 + T041 + T042 + T043 + T044 + T045 + T046 ──► T047
 
 ---
 
-## Phase 11: Convergence
-
-- [ ] T051 Create `demo/api/app_v2.py` — copy of `app.py` with `pythonjsonlogger` import and `JsonFormatter` lines uncommented; and `demo/api/requirements_v2.txt` — copy of `requirements.txt` with `python-json-logger` line uncommented per FR-011 (missing)
-- [ ] T052 Add `git checkout demo/api/app.py demo/api/requirements.txt` to `demo/reset.sh` so running reset after a dev-loop demo restores the original source files per SC-004 (partial)
-- [X] T053 Add `nohup.out` and `presentation/nohup.out` to `.gitignore` at repo root to exclude Slidev build artifacts per repo hygiene (unrequested)
-
----
-
 ## Implementation Strategy
 
 **MVP** (minimum to deliver US1 value): T001 → T011 → T012 → T013. This produces a shareable Outline section suitable for manager review before any demo work begins.
