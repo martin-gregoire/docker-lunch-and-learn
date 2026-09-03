@@ -114,7 +114,7 @@ layout: default
 ├──────────────┴─┴──────────────┤
 │         Hypervisor            │
 ├───────────────────────────────┤
-│       Host OS + Hardware      │
+│       OS + Hardware           │
 └───────────────────────────────┘
 </pre>
 <div style="display:flex;gap:0.35rem;margin-top:0.45rem;flex-wrap:wrap;justify-content:center;">
@@ -136,9 +136,9 @@ layout: default
 ├──────────────┴─┴──────────────┤
 │  Container Runtime (shared)   │
 ├───────────────────────────────┤
-│  Host OS Kernel (shared)      │
+│        Kernel (shared)        │
 ├───────────────────────────────┤
-│           Hardware            │
+│       OS + Hardware           │
 └───────────────────────────────┘
 </pre>
 <div style="display:flex;gap:0.35rem;margin-top:0.45rem;flex-wrap:wrap;justify-content:center;">
@@ -1089,6 +1089,77 @@ spec:
 > **StatefulSet** = like a Deployment but each pod gets a stable identity and its own PVC — use it for databases. The demo uses one for PostgreSQL.
 
 </div>
+</div>
+
+---
+
+# Demo Toolchain
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-top:1.2rem;">
+<div style="border-top:4px solid #2496ed;background:#eff6ff;padding:0.9rem;border-radius:6px;min-height:9rem;">
+<div style="font-size:1.5rem;margin-bottom:0.35rem;">🐳</div>
+<div style="font-weight:700;color:#1d4ed8;font-size:0.9rem;">Docker + Compose</div>
+<div style="font-size:0.65rem;color:#475569;margin-top:0.3rem;line-height:1.45;">Build the API and nginx images, then run the complete three-container stack locally.</div>
+<code style="display:block;margin-top:0.55rem;font-size:0.58rem;">docker compose up --build</code>
+</div>
+<div style="border-top:4px solid #f59e0b;background:#fffbeb;padding:0.9rem;border-radius:6px;min-height:9rem;">
+<div style="font-size:1.5rem;margin-bottom:0.35rem;">💻</div>
+<div style="font-weight:700;color:#b45309;font-size:0.9rem;">Colima</div>
+<div style="font-size:0.65rem;color:#475569;margin-top:0.3rem;line-height:1.45;">Provides the Linux VM on macOS, the Docker runtime, and a local single-node Kubernetes cluster.</div>
+<code style="display:block;margin-top:0.55rem;font-size:0.58rem;">colima start --kubernetes</code>
+</div>
+<div style="border-top:4px solid #326ce5;background:#f0f7ff;padding:0.9rem;border-radius:6px;min-height:9rem;">
+<div style="font-size:1.5rem;margin-bottom:0.35rem;">☸️</div>
+<div style="font-weight:700;color:#1d4ed8;font-size:0.9rem;">kubectl</div>
+<div style="font-size:0.65rem;color:#475569;margin-top:0.3rem;line-height:1.45;">Sends manifests to the Kubernetes API and inspects pods, services, rollouts, and logs.</div>
+<code style="display:block;margin-top:0.55rem;font-size:0.58rem;">kubectl apply -f k8s/</code>
+</div>
+</div>
+
+---
+
+# Demo Environment Architecture
+
+<div style="width:64%;margin:0.4rem auto 0;font-size:0.58rem;text-align:center;">
+<div style="border:1px solid #64748b;background:#f8fafc;border-radius:6px;padding:0.28rem;color:#334155;">
+<strong>macOS host</strong>
+</div>
+<div style="color:#64748b;font-size:0.82rem;line-height:0.9rem;">↓</div>
+<div style="border:2px solid #f59e0b;background:#fffbeb;border-radius:8px;padding:0.38rem;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.28rem;color:#92400e;">
+<strong>Colima Linux VM</strong>
+<span style="font-size:0.52rem;background:#fde68a;padding:0.08rem 0.35rem;border-radius:3px;">single Kubernetes node: colima</span>
+</div>
+<div style="border:2px solid #326ce5;background:#eff6ff;border-radius:7px;padding:0.38rem;">
+<div style="display:flex;justify-content:space-between;margin-bottom:0.28rem;color:#1e40af;"><strong>Kubernetes cluster</strong><span>namespace: <code>lunchdemo</code></span></div>
+
+<div style="width:68%;margin:0 auto;border:1px solid #0ea5e9;background:white;border-radius:5px;padding:0.35rem 0.5rem;">
+<div style="font-weight:700;color:#0369a1;">nginx Service</div>
+<div style="margin:0.25rem 0;border-top:1px solid #bae6fd;"></div>
+<div style="background:#e0f2fe;padding:0.2rem;border-radius:3px;"><strong>Deployment</strong><br>nginx pod · :80</div>
+</div>
+<div style="color:#64748b;font-size:0.82rem;line-height:0.9rem;">↓</div>
+<div style="width:68%;margin:0 auto;border:1px solid #16a34a;background:white;border-radius:5px;padding:0.35rem 0.5rem;">
+<div style="font-weight:700;color:#15803d;">api Service</div>
+<div style="margin:0.25rem 0;border-top:1px solid #bbf7d0;"></div>
+<div style="background:#dcfce7;padding:0.2rem;border-radius:3px;"><strong>Deployment</strong><br>Flask API pod · :8000</div>
+</div>
+<div style="color:#64748b;font-size:0.82rem;line-height:0.9rem;">↓</div>
+<div style="width:68%;margin:0 auto;border:1px solid #7c3aed;background:white;border-radius:5px;padding:0.35rem 0.5rem;">
+<div style="font-weight:700;color:#6d28d9;">db Service</div>
+<div style="margin:0.25rem 0;border-top:1px solid #ddd6fe;"></div>
+<div style="background:#ede9fe;padding:0.2rem;border-radius:3px;"><strong>StatefulSet</strong><br>PostgreSQL pod · :5432</div>
+</div>
+<div style="color:#64748b;font-size:0.82rem;line-height:0.9rem;">↓</div>
+<div style="width:58%;margin:0 auto;border:1px solid #64748b;background:#f8fafc;border-radius:4px;padding:0.22rem;">
+<strong>PVC</strong> <code>db-storage</code> · 1 Gi persistent data
+</div>
+</div>
+</div>
+</div>
+
+<div style="text-align:center;margin-top:0.35rem;font-size:0.6rem;color:#475569;">
+Three workloads on one local node &nbsp;·&nbsp; Services provide stable in-cluster DNS &nbsp;·&nbsp; PVC keeps database state
 </div>
 
 ---
