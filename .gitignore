@@ -17,3 +17,6 @@ nohup.out
 
 # Editor
 .vscode/settings.json
+
+# Secrets
+demo/.env

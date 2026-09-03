@@ -406,7 +406,7 @@ The single demo checkpoint runs at the end of the presentation (§10) and walks 
 
 2. **Start the full stack**
    ```bash
-   docker compose up -d
+   docker compose --env-file .env up -d
    docker compose ps
    ```
    Expected: all three services (`nginx`, `api`, `db`) healthy. Open `http://localhost` in a browser.
